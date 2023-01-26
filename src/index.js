@@ -12,13 +12,11 @@ const refs = {
 
 refs.loadMoreBtn.style.display = 'none';
 let page = 1;
-let isVisible = 0;
 
 refs.form.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onloadMoreBtn);
   
 function onloadMoreBtn() {
-  refs.loadMoreBtn.style.display = 'none';
   const name = refs.input.value.trim();
   page += 1;
 
@@ -29,7 +27,6 @@ function onloadMoreBtn() {
 
 function onSearch(evt) {
   evt.preventDefault();
-  isVisible = 0;
   refs.gallery.innerHTML = '';
 
 const name = refs.input.value.trim();
@@ -37,7 +34,6 @@ const name = refs.input.value.trim();
   if (name !== '') {
     pixabayAPI(name);
   } else {
-    refs.loadMoreBtn.style.display = 'none';
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
@@ -61,16 +57,11 @@ async function pixabayAPI(name, page) {
 
   try {
     const response = await axios.get(API_URL, options);
-    isVisible += response.data.hits.length;
-
     message(
       response.data.hits.length,
-      isVisible,
       options.params.per_page,
       response.data.total
     );
-
-    
 
     createMarkup(response.data);
   } catch (error) {
@@ -118,8 +109,6 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
-
-
 function message(length, isVisible, per_page, totalHits) {
   if (!length) {
     Notify.failure(
@@ -132,15 +121,5 @@ function message(length, isVisible, per_page, totalHits) {
   }
   if (isVisible >= totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
-    refs.loadMoreBtn.style.display = 'none';
   }
-  console.log(totalHits);
 }
-
-// const { height: cardHeight } =
-//   refs.gallery.firstElementChild.getBoundingClientRect();
-
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: 'smooth',
-// });
