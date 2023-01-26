@@ -10,15 +10,12 @@ const refs = {
   loadMoreBtn: document.querySelector('.load-more'),
 };
 
-
 refs.loadMoreBtn.style.display = 'none';
 let page = 1;
 let isVisible = 0;
 
 refs.form.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onloadMoreBtn);
-
-
   
 function onloadMoreBtn() {
   refs.loadMoreBtn.style.display = 'none';
@@ -26,7 +23,7 @@ function onloadMoreBtn() {
   page += 1;
 
   pixabayAPI(name, page);
-  refs.loadMoreBtn.style.display = 'flex';
+  refs.loadMoreBtn.style.display = 'inline-block';
   
 }
 
@@ -72,6 +69,8 @@ async function pixabayAPI(name, page) {
       options.params.per_page,
       response.data.total
     );
+
+    
 
     createMarkup(response.data);
   } catch (error) {
@@ -119,6 +118,8 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
+
+
 function message(length, isVisible, per_page, totalHits) {
   if (!length) {
     Notify.failure(
@@ -126,7 +127,7 @@ function message(length, isVisible, per_page, totalHits) {
     );
   }
   if (length >= isVisible) {
-    refs.loadMoreBtn.style.display = 'flex';
+    refs.loadMoreBtn.style.display = 'inline-block';
     Notify.info(`Hooray! We found ${totalHits} images.`);
   }
   if (isVisible >= totalHits) {
@@ -136,3 +137,10 @@ function message(length, isVisible, per_page, totalHits) {
   console.log(totalHits);
 }
 
+// const { height: cardHeight } =
+//   refs.gallery.firstElementChild.getBoundingClientRect();
+
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: 'smooth',
+// });
