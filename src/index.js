@@ -17,6 +17,7 @@ refs.form.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onloadMoreBtn);
   
 function onloadMoreBtn() {
+  refs.loadMoreBtn.style.display = 'none';
   const name = refs.input.value.trim();
   page += 1;
 
@@ -34,6 +35,7 @@ const name = refs.input.value.trim();
   if (name !== '') {
     pixabayAPI(name);
   } else {
+    refs.loadMoreBtn.style.display = 'none';
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
@@ -121,5 +123,7 @@ function message(length, isVisible, per_page, totalHits) {
   }
   if (isVisible >= totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
+    refs.loadMoreBtn.style.display = 'none';
   }
+  console.log(totalHits);
 }
