@@ -136,5 +136,5 @@ function message(length, isVisible, per_page, totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
     refs.loadMoreBtn.style.display = 'none';
   }
-  console.log(totalHits);
+
 }
