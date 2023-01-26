@@ -12,6 +12,7 @@ const refs = {
 
 refs.loadMoreBtn.style.display = 'none';
 let page = 1;
+let isVisible = 0;
 
 refs.form.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onloadMoreBtn);
@@ -28,6 +29,7 @@ function onloadMoreBtn() {
 
 function onSearch(evt) {
   evt.preventDefault();
+  isVisible = 0;
   refs.gallery.innerHTML = '';
 
 const name = refs.input.value.trim();
@@ -57,13 +59,20 @@ async function pixabayAPI(name, page) {
     },
   };
 
+   
+
   try {
     const response = await axios.get(API_URL, options);
+    isVisible += response.data.hits.length;
+
     message(
       response.data.hits.length,
+      isVisible,
       options.params.per_page,
       response.data.total
     );
+
+    
 
     createMarkup(response.data);
   } catch (error) {
@@ -110,6 +119,8 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
+
+
 
 function message(length, isVisible, per_page, totalHits) {
   if (!length) {
