@@ -12,7 +12,7 @@ const refs = {
 
 refs.loadMoreBtn.style.display = 'none';
 let page = 1;
-let isVisible = 0;
+let cardsDisplayed = 0;
 
 refs.form.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onloadMoreBtn);
@@ -29,7 +29,7 @@ function onloadMoreBtn() {
 
 function onSearch(evt) {
   evt.preventDefault();
-  isVisible = 0;
+  cardsDisplayed = 0;
   refs.gallery.innerHTML = '';
 
 const name = refs.input.value.trim();
@@ -63,11 +63,11 @@ async function pixabayAPI(name, page) {
 
   try {
     const response = await axios.get(API_URL, options);
-    isVisible += response.data.hits.length;
+    cardsDisplayed += response.data.hits.length;
 
     message(
       response.data.hits.length,
-      isVisible,
+      cardsDisplayed,
       options.params.per_page,
       response.data.total
     );
@@ -122,19 +122,18 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
 
 
 
-function message(length, isVisible, per_page, totalHits) {
+function message(length, cardsDisplayed, per_page, totalHits) {
   if (!length) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
-  if (length >= isVisible) {
+  if (length >= cardsDisplayed) {
     refs.loadMoreBtn.style.display = 'inline-block';
     Notify.info(`Hooray! We found ${totalHits} images.`);
   }
-  if (isVisible >= totalHits) {
+  if (cardsDisplayed >= totalHits) {
     Notify.info("We're sorry, but you've reached the end of search results.");
     refs.loadMoreBtn.style.display = 'none';
   }
-
 }
