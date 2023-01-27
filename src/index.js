@@ -110,17 +110,17 @@ function createMarkup(arr) {
   simpleLightBox.refresh();
 }
 
-function message(length, cardsDisplayed, total) {
+function message(length, cardsDisplayed, totalHits) {
   if (!length) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
-  if (length >= cardsDisplayed) {
+  if (length >= cardsDisplayed && length !== 0) {
     refs.loadMoreBtn.style.display = 'flex';
-    Notify.info(`Hooray! We found ${total} images.`);
+    Notify.info(`Hooray! We found ${totalHits} images.`);
   }
-  if (length < 40) {
+  if (length < 40 && length !== 0) {
     Notify.info("We're sorry, but you've reached the end of search results.");
     refs.loadMoreBtn.style.display = 'none';
   }
