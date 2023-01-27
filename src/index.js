@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Notiflix, { Notify } from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -15,12 +15,12 @@ let page = 1;
 let cardsDisplayed = 0;
 
 refs.form.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onloadMoreBtn);
+refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
-function onloadMoreBtn() {
+function onLoadMore() {
   refs.loadMoreBtn.style.display = 'none';
-  const name = refs.input.value.trim();
   page += 1;
+  const name = refs.form.querySelector('input').value.trim();
   pixabayAPI(name, page);
   refs.loadMoreBtn.style.display = 'flex';
 }
@@ -28,12 +28,13 @@ function onloadMoreBtn() {
 function onSearch(evt) {
   evt.preventDefault();
   cardsDisplayed = 0;
+  page = 1;
   refs.gallery.innerHTML = '';
+
   const name = refs.input.value.trim();
 
   if (name !== '') {
     pixabayAPI(name);
-     refs.loadMoreBtn.style.display = 'none';
   } else {
     refs.loadMoreBtn.style.display = 'none';
     return Notify.failure(
@@ -43,11 +44,11 @@ function onSearch(evt) {
 }
 
 async function pixabayAPI(name, page) {
-  const API_URL = 'https://pixabay.com/api/';
+  const BASE_URL = 'https://pixabay.com/api/';
 
   const options = {
     params: {
-      key: '33068363-7af952915bf6f1bda302967fe',
+      key: '31760233-da36889e6feb9e4679dfb5488',
       q: name,
       image_type: 'photo',
       orientation: 'horizontal',
@@ -58,15 +59,10 @@ async function pixabayAPI(name, page) {
   };
 
   try {
-    const response = await axios.get(API_URL, options);
+    const response = await axios.get(BASE_URL, options);
     cardsDisplayed += response.data.hits.length;
 
-    message(
-      response.data.hits.length,
-      cardsDisplayed,
-      options.params.per_page,
-      response.data.total
-    );
+    message(response.data.hits.length, cardsDisplayed, response.data.total);
 
     createMarkup(response.data);
   } catch (error) {
@@ -114,25 +110,18 @@ function createMarkup(arr) {
   simpleLightBox.refresh();
 }
 
-function message(length, cardsDisplayed, per_page, totalHits) {
-  if (!length) {
-    refs.loadMoreBtn.style.display = 'none';
-    Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-  }
-  if (length === cardsDisplayed) {
-    refs.loadMoreBtn.style.display = 'flex';
-    Notify.success(`Hooray! We found ${totalHits} images.`);
-  }
-  // if (cardsDisplayed >= totalHits) {
-  //   Notify.info("We're sorry, but you've reached the end of search results.");
-  //   refs.loadMoreBtn.style.display = 'none';
+function message(length, cardsDisplayed, total) {
+  // if (!length) {
+  //   Notify.failure(
+  //     'Sorry, there are no images matching your search query. Please try again.'
+  //   );
   // }
+  if (length >= cardsDisplayed) {
+    refs.loadMoreBtn.style.display = 'flex';
+    Notify.info(`Hooray! We found ${total} images.`);
+  }
   if (length < 40) {
+    Notify.info("We're sorry, but you've reached the end of search results.");
     refs.loadMoreBtn.style.display = 'none';
-    return Notify.info(
-      "We're sorry, but you've reached the end of search results."
-    );
   }
 }
