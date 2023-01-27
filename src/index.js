@@ -35,6 +35,7 @@ function onSearch(evt) {
 
   if (name !== '') {
     pixabayAPI(name);
+    refs.loadMoreBtn.style.display = 'none';
   } else {
     refs.loadMoreBtn.style.display = 'none';
     return Notify.failure(
