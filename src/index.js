@@ -111,11 +111,11 @@ function createMarkup(arr) {
 }
 
 function message(length, cardsDisplayed, total) {
-  // if (!length) {
-  //   Notify.failure(
-  //     'Sorry, there are no images matching your search query. Please try again.'
-  //   );
-  // }
+  if (!length) {
+    Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  }
   if (length >= cardsDisplayed) {
     refs.loadMoreBtn.style.display = 'flex';
     Notify.info(`Hooray! We found ${total} images.`);
